@@ -54,6 +54,15 @@ if (Test-Path $OldPath) {
     Move-Item -Path $OldPath -Destination $NewPath
 }
 
+# Define the path to the build.gradle file
+$BuildGradlePath = Join-Path -Path $ProjectRoot -ChildPath "android\app\build.gradle"
+
+# Check if the build.gradle file exists
+if (Test-Path $BuildGradlePath) {
+    # Read the contents of the build.gradle file, replace the namespace, and write the changes back
+    (Get-Content $BuildGradlePath) -replace 'namespace "com.example.my_template"', "namespace `"$PackageName`"" | Set-Content $BuildGradlePath
+}
+
 # Update the package name in MainActivity.kt
 $MainActivityPath = Join-Path -Path $NewPath -ChildPath "MainActivity.kt"
 if (Test-Path $MainActivityPath) {

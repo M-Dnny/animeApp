@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:anime_app/provider/theme_provider/theme_provider.dart';
 import 'package:anime_app/router/routes.dart';
-import 'package:anime_app/theme/color_scheme.dart';
 import 'package:anime_app/utils/extentions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
   runApp(const ProviderScope(child: MainApp()));
@@ -15,23 +14,14 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp.router(
-      themeMode: ref.watch(themeStateProvider),
-      routerConfig: router,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: lightColorScheme,
-        textTheme: GoogleFonts.poppinsTextTheme(context.textTheme).apply(
-            bodyColor: context.theme.colorScheme.inverseSurface,
-            displayColor: context.theme.colorScheme.inverseSurface),
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: darkColorScheme,
-        textTheme: GoogleFonts.poppinsTextTheme(context.textTheme).apply(
-            bodyColor: context.theme.colorScheme.surface,
-            displayColor: context.theme.colorScheme.surface),
-      ),
-    );
+    return ThemeProvider(
+        duration: const Duration(seconds: 1),
+        initTheme: lightThemeData(context.textTheme),
+        builder: (context, theme) {
+          return MaterialApp.router(
+            routerConfig: router,
+            theme: theme,
+          );
+        });
   }
 }

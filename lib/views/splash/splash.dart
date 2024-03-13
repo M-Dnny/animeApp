@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:anime_app/services/internet_available.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:anime_app/services/internet_available.dart';
+import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = '/';
@@ -25,8 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (connectResult != ConnectivityResult.none) {
       if (await isInternetAvailable()) {
-        Timer(const Duration(seconds: 2), () {
-          context.go('/login');
+        Timer(const Duration(seconds: 5), () {
+          context.go('/home');
         });
       } else {
         showError();
@@ -63,16 +64,19 @@ class _SplashScreenState extends State<SplashScreen> {
         child: SizedBox(
           width: 150,
           height: 150,
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100)),
-            child: const Center(
-              child: Padding(
-                padding: EdgeInsets.all(18.0),
-                child: Hero(
-                  tag: "logo",
-                  child: FlutterLogo(size: 150),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Hero(
+                tag: "logo",
+                child: RippleAnimation(
+                  color: const Color(0xFFAA3333),
+                  delay: const Duration(milliseconds: 300),
+                  repeat: true,
+                  minRadius: 45,
+                  ripplesCount: 5,
+                  duration: const Duration(milliseconds: 6 * 300),
+                  child: Image.asset("assets/images/logo_dark.png", width: 100),
                 ),
               ),
             ),
