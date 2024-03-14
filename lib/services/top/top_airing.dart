@@ -9,7 +9,7 @@ class TopAiringService {
 
   Future<List<TopAiringModel>> getTopAiring() async {
     try {
-      const url = "$baseUrl$animeUrl$zoroUrl/top-airing";
+      const url = "$baseUrl$animeUrl/top-airing";
 
       log("TopAiring URL: $url");
 

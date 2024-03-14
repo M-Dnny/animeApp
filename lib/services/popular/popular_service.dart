@@ -8,7 +8,7 @@ class PopularService {
   final dio = Dio();
   Future<List<PopularModel>> getPopular() async {
     try {
-      const url = "$baseUrl$animeUrl$zoroUrl/most-popular";
+      const url = "$baseUrl$animeUrl/most-popular";
 
       log("Popular URL: $url");
 

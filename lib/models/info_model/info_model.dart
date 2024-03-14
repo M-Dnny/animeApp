@@ -1,80 +1,120 @@
 class AnimeInfoModel {
-  final String id;
-  final String title;
-  final int malID;
-  final int alID;
-  final String image;
-  final String description;
-  final String type;
-  final String url;
-  final String subOrDub;
-  final bool hasSub;
-  final bool hasDub;
-  final int totalEpisodes;
-  final List<Episode> episodes;
+  InfoModel info;
 
   AnimeInfoModel({
-    required this.id,
-    required this.title,
-    required this.malID,
-    required this.alID,
-    required this.image,
-    required this.description,
-    required this.type,
-    required this.url,
-    required this.subOrDub,
-    required this.hasSub,
-    required this.hasDub,
-    required this.totalEpisodes,
-    required this.episodes,
+    required this.info,
   });
 
   factory AnimeInfoModel.fromJson(Map<String, dynamic> json) {
-    final episodes = <Episode>[];
-    for (final episodeJson in json['episodes']) {
-      episodes.add(Episode.fromJson(episodeJson));
-    }
-
     return AnimeInfoModel(
-      id: json['id'],
-      title: json['title'],
-      malID: json['malID'],
-      alID: json['alID'],
-      image: json['image'],
-      description: json['description'],
-      type: json['type'],
-      url: json['url'],
-      subOrDub: json['subOrDub'],
-      hasSub: json['hasSub'],
-      hasDub: json['hasDub'],
-      totalEpisodes: json['totalEpisodes'],
-      episodes: episodes,
+      info: InfoModel.fromJson(json["info"]),
     );
   }
 }
 
-class Episode {
+class InfoModel {
   final String id;
-  final int number;
-  final String title;
-  final bool isFiller;
-  final String url;
+  final String name;
+  final String poster;
+  final String description;
+  final StatsModel stats;
 
-  Episode({
+  InfoModel({
     required this.id,
-    required this.number,
-    required this.title,
-    required this.isFiller,
-    required this.url,
+    required this.name,
+    required this.poster,
+    required this.description,
+    required this.stats,
   });
 
-  factory Episode.fromJson(Map<String, dynamic> json) {
-    return Episode(
-      id: json['id'],
-      number: json['number'],
-      title: json['title'],
-      isFiller: json['isFiller'],
-      url: json['url'],
+  factory InfoModel.fromJson(Map<String, dynamic> json) {
+    return InfoModel(
+      id: json["id"],
+      name: json["name"],
+      poster: json["poster"],
+      description: json["description"],
+      stats: StatsModel.fromJson(json["stats"]),
+    );
+  }
+}
+
+class StatsModel {
+  final String rating;
+  final String quality;
+  final EpisodeModel episodes;
+  final String type;
+  final String duration;
+
+  StatsModel({
+    required this.rating,
+    required this.quality,
+    required this.episodes,
+    required this.type,
+    required this.duration,
+  });
+
+  factory StatsModel.fromJson(Map<String, dynamic> json) {
+    return StatsModel(
+      rating: json["rating"],
+      quality: json["quality"],
+      episodes: EpisodeModel.fromJson(json["episodes"]),
+      type: json["type"],
+      duration: json["duration"],
+    );
+  }
+}
+
+class EpisodeModel {
+  final int sub;
+  final int dub;
+
+  EpisodeModel({required this.sub, required this.dub});
+
+  factory EpisodeModel.fromJson(Map<String, dynamic> json) {
+    return EpisodeModel(
+      sub: json["sub"],
+      dub: json["dub"],
+    );
+  }
+}
+
+class MoreInfoModel {
+  final String japanese;
+  final String synonyms;
+  final String aired;
+  final String premiered;
+  final String duration;
+  final String status;
+  final double malscore;
+  final List<String> genres;
+  final String studios;
+  final List<String> producers;
+
+  MoreInfoModel({
+    required this.japanese,
+    required this.synonyms,
+    required this.aired,
+    required this.premiered,
+    required this.duration,
+    required this.status,
+    required this.malscore,
+    required this.genres,
+    required this.studios,
+    required this.producers,
+  });
+
+  factory MoreInfoModel.fromJson(Map<String, dynamic> json) {
+    return MoreInfoModel(
+      japanese: json["japanese"],
+      synonyms: json["synonyms"],
+      aired: json["aired"],
+      premiered: json["premiered"],
+      duration: json["duration"],
+      status: json["status"],
+      malscore: json["malscore"].toDouble(),
+      genres: List<String>.from(json["genres"]),
+      studios: json["studios"],
+      producers: List<String>.from(json["producers"]),
     );
   }
 }

@@ -1,43 +1,48 @@
 class UpcomingModel {
-  final String id;
-  final String title;
-  final String url;
-  final String image;
-  final String duration;
-  final String japaneseTitle;
-  final String type;
-  final bool nsfw;
-  final int sub;
-  final int dub;
-  final int episodes;
+  String id;
+  String name;
+  String poster;
+  String duration;
+  String type;
+  String rating;
+  int rank;
+  Episode episode;
 
   UpcomingModel({
     required this.id,
-    required this.title,
-    required this.url,
-    required this.image,
+    required this.name,
+    required this.poster,
     required this.duration,
-    required this.japaneseTitle,
     required this.type,
-    required this.nsfw,
-    required this.sub,
-    required this.dub,
-    required this.episodes,
+    required this.rating,
+    required this.rank,
+    required this.episode,
   });
 
   factory UpcomingModel.fromJson(Map<String, dynamic> json) {
     return UpcomingModel(
       id: json['id'],
-      title: json['title'],
-      url: json['url'],
-      image: json['image'],
-      duration: json['duration'],
-      japaneseTitle: json['japaneseTitle'],
-      type: json['type'],
-      nsfw: json['nsfw'],
-      sub: json['sub'],
-      dub: json['dub'],
-      episodes: json['episodes'],
+      name: json['name'],
+      poster: json['poster'],
+      duration: json['duration'] ?? "",
+      type: json['type'] ?? "",
+      rating: json['rating'] ?? "",
+      rank: json['rank'] ?? 0,
+      episode: Episode.fromJson(json['episodes']),
+    );
+  }
+}
+
+class Episode {
+  int sub;
+  int dub;
+
+  Episode({required this.sub, required this.dub});
+
+  factory Episode.fromJson(Map<String, dynamic> json) {
+    return Episode(
+      sub: json['sub'] ?? 0,
+      dub: json['dub'] == null ? 0 : json['dub'] ?? 0,
     );
   }
 }

@@ -26,7 +26,19 @@ final router = GoRouter(
     GoRoute(
       path: '/animeDetail',
       name: 'animeDetail',
-      builder: (context, state) => const AnimeDetail(),
+      pageBuilder: (context, state) {
+        return CustomTransitionPage(
+            child: const AnimeDetail(),
+            transitionDuration: const Duration(milliseconds: 500),
+            reverseTransitionDuration: const Duration(milliseconds: 500),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: CurveTween(curve: Curves.ease).animate(animation),
+                child: child,
+              );
+            });
+      },
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

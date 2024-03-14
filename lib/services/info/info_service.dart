@@ -13,14 +13,14 @@ class InfoService {
   Future<AnimeInfoModel> getInfo({required FutureProviderRef ref}) async {
     try {
       final id = ref.watch(animeInfoIdProvider);
-      final url = "$baseUrl$animeUrl$zoroUrl/info?id=$id";
+      final url = "$baseUrl$animeUrl/info?id=$id";
 
       log("Anime Info URL: $url");
 
       final result = await dio.get(url);
 
       if (result.statusCode == 200) {
-        final res = AnimeInfoModel.fromJson(result.data);
+        final res = AnimeInfoModel.fromJson(result.data['anime']);
 
         log(res.toString());
 

@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
+import 'package:anime/models/home_model/home_model.dart';
+import 'package:anime/provider/service_provider/home/home_provider.dart';
 import 'package:anime/provider/service_provider/info/info_provider.dart';
-import 'package:anime/provider/service_provider/popular/popular_provider.dart';
-import 'package:anime/provider/service_provider/top/top_airing_provider.dart';
-import 'package:anime/provider/service_provider/upcoming/upcoming_provider.dart';
 import 'package:anime/provider/theme_provider/theme_provider.dart';
 import 'package:anime/utils/extentions.dart';
+import 'package:anime/utils/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -24,26 +24,31 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final homeData = ref.watch(homeProvider);
+
     return ThemeSwitchingArea(
-      child: const Scaffold(
+      child: Scaffold(
         body: SafeArea(
             child: SingleChildScrollView(
           child: Column(
             children: [
               // Header Most Popular Anime Episodes
-              Header(),
+              Header(
+                data: homeData,
+              ),
 
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
                 child: Column(children: [
                   // Upcoming Anime
 
-                  UpcomingRender(),
+                  UpcomingRender(data: homeData),
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                  // Top Airing Anime
-                  TopAiring(),
+                  // // Top Airing Anime
+                  TopAiring(data: homeData),
                 ]),
               ),
             ],
@@ -55,11 +60,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 }
 
 class TopAiring extends ConsumerWidget {
-  const TopAiring({super.key});
+  const TopAiring({
+    super.key,
+    required this.data,
+  });
+  final AsyncValue<HomeModel> data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final topAiring = ref.watch(topAiringProvider);
     return Column(
       children: [
         Align(
@@ -70,8 +78,9 @@ class TopAiring extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 20),
-        topAiring.when(
-            data: (data) {
+        data.when(
+            data: (item) {
+              final data = item.topAiring;
               return SizedBox(
                 height: 220,
                 child: ListView.builder(
@@ -120,27 +129,40 @@ class TopAiring extends ConsumerWidget {
                                 ),
                                 Column(
                                   children: [
-                                    Container(
-                                      height: 190,
-                                      width: 150,
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(18.5),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        imageUrl: data[index].image,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (context, url, error) =>
-                                            Image.asset(
-                                          "assets/images/errimage.png",
-                                          fit: BoxFit.cover,
+                                    Hero(
+                                      tag: data[index].poster,
+                                      flightShuttleBuilder: (flightContext,
+                                          animation,
+                                          flightDirection,
+                                          fromHeroContext,
+                                          toHeroContext) {
+                                        return toHeroContext.widget;
+                                      },
+                                      child: Container(
+                                        height: 190,
+                                        width: 150,
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(18.5),
                                         ),
-                                        progressIndicatorBuilder:
-                                            (context, url, progress) => Center(
-                                          child: CircularProgressIndicator(
-                                            value: progress.progress,
-                                            color: context.colorScheme.tertiary,
+                                        child: CachedNetworkImage(
+                                          imageUrl: data[index].poster,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                            "assets/images/errimage.png",
+                                            fit: BoxFit.cover,
+                                          ),
+                                          progressIndicatorBuilder:
+                                              (context, url, progress) =>
+                                                  Center(
+                                            child: CircularProgressIndicator(
+                                              value: progress.progress,
+                                              color:
+                                                  context.colorScheme.tertiary,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -150,7 +172,7 @@ class TopAiring extends ConsumerWidget {
                                       child: SizedBox(
                                           width: 150,
                                           child: Text(
-                                            data[index].title,
+                                            data[index].name,
                                             textAlign: TextAlign.center,
                                             maxLines: 1,
                                             style: context.textTheme.titleSmall!
@@ -187,11 +209,12 @@ class TopAiring extends ConsumerWidget {
 class UpcomingRender extends ConsumerWidget {
   const UpcomingRender({
     super.key,
+    required this.data,
   });
+  final AsyncValue<HomeModel> data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final upcoming = ref.watch(upcomingProvider);
     return Column(
       children: [
         // Header
@@ -222,8 +245,9 @@ class UpcomingRender extends ConsumerWidget {
 
         const SizedBox(height: 20),
 
-        upcoming.when(
-            data: (data) {
+        data.when(
+            data: (item) {
+              final data = item.upcoming;
               return SizedBox(
                 height: 220,
                 child: ListView.builder(
@@ -244,7 +268,7 @@ class UpcomingRender extends ConsumerWidget {
                                 borderRadius: BorderRadius.circular(18.5),
                               ),
                               child: CachedNetworkImage(
-                                imageUrl: data[index].image,
+                                imageUrl: data[index].poster,
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) =>
                                     Image.asset(
@@ -265,7 +289,7 @@ class UpcomingRender extends ConsumerWidget {
                               child: SizedBox(
                                   width: 150,
                                   child: Text(
-                                    data[index].title,
+                                    data[index].name,
                                     textAlign: TextAlign.center,
                                     maxLines: 1,
                                     style: context.textTheme.titleSmall!
@@ -299,8 +323,11 @@ class UpcomingRender extends ConsumerWidget {
 
 class Header extends ConsumerWidget {
   const Header({
+    required this.data,
     super.key,
   });
+
+  final AsyncValue<HomeModel> data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -321,7 +348,7 @@ class Header extends ConsumerWidget {
 
     return Stack(
       children: [
-        const ImageContainer(),
+        ImageContainer(data: data),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             alignment: Alignment.topLeft,
@@ -359,12 +386,11 @@ class Header extends ConsumerWidget {
 class ImageContainer extends ConsumerWidget {
   const ImageContainer({
     super.key,
+    required this.data,
   });
-
+  final AsyncValue<HomeModel> data;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final popularImages = ref.watch(popularProvider);
-
     return Container(
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
@@ -373,11 +399,13 @@ class ImageContainer extends ConsumerWidget {
             bottomEnd: Radius.circular(30),
           ),
         ),
-        child: popularImages.when(
-            data: (data) {
+        child: data.when(
+            data: (item) {
+              final data = item.banners;
+
               return CarouselSlider(
                 options: CarouselOptions(
-                  // autoPlay: true,
+                  autoPlay: true,
                   autoPlayInterval: const Duration(seconds: 4),
                   enableInfiniteScroll: true,
                   viewportFraction: 0.8,
@@ -385,83 +413,72 @@ class ImageContainer extends ConsumerWidget {
                   height: context.heigth * 0.55,
                   enlargeFactor: 0.3,
                 ),
-                items: data
-                    .map((e) => Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 40),
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                              ),
-                              foregroundDecoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(30)),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.black.withOpacity(0.9),
-                                    Colors.transparent,
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                ),
-                              ),
-                              child: CachedNetworkImage(
-                                  imageUrl: e.image,
+                items: data.map((e) {
+                  final poster = e.poster.replaceFirst('300x400', '1920x1080');
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 40),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                        ),
+                        foregroundDecoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(30)),
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.black.withOpacity(0.9),
+                              Colors.transparent,
+                            ],
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                          ),
+                        ),
+                        child: CachedNetworkImage(
+                            imageUrl: poster,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) => Image.asset(
+                                  "assets/images/notFound1.gif",
                                   fit: BoxFit.cover,
-                                  errorWidget: (context, url, error) =>
-                                      Image.asset(
-                                        "assets/images/notFound1.gif",
-                                        fit: BoxFit.cover,
-                                      ),
-                                  progressIndicatorBuilder: (context, url,
-                                          progress) =>
-                                      Center(
-                                        child: CircularProgressIndicator(
-                                          value: progress.progress,
-                                          color: context.colorScheme.tertiary,
-                                        ),
-                                      ),
-                                  width: context.width),
-                            ),
-                            Positioned(
-                              bottom: 20,
-                              left: 20,
-                              child: SizedBox(
-                                width: context.width * 0.7,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      e.title,
-                                      style: context.textTheme.displaySmall!
-                                          .copyWith(
-                                        fontSize: 24,
-                                        color: Colors.white,
-                                        fontFamily:
-                                            GoogleFonts.cinzelDecorative()
-                                                .fontFamily,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                      "Popular Episode ${e.episodes}",
-                                      style: context.textTheme.titleMedium!
-                                          .copyWith(
-                                              fontFamily: GoogleFonts.cinzel()
-                                                  .fontFamily,
-                                              color: Colors.white),
-                                    ),
-                                  ],
                                 ),
+                            progressIndicatorBuilder:
+                                (context, url, progress) => Center(
+                                      child: LoadingShimmer(
+                                        height: context.heigth * 0.55,
+                                        width: context.width - 80,
+                                        radius: 20,
+                                      ),
+                                    ),
+                            width: context.width),
+                      ),
+                      Positioned(
+                        bottom: 20,
+                        left: 20,
+                        child: SizedBox(
+                          width: context.width * 0.7,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                e.name,
+                                style: context.textTheme.displaySmall!.copyWith(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                  fontFamily:
+                                      GoogleFonts.cinzelDecorative().fontFamily,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
-                        ))
-                    .toList(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
               );
             },
             error: (error, stackTrace) => SizedBox(
@@ -471,8 +488,10 @@ class ImageContainer extends ConsumerWidget {
             loading: () => SizedBox(
                   height: context.heigth * 0.55,
                   child: Center(
-                    child: CircularProgressIndicator(
-                      color: context.colorScheme.tertiary,
+                    child: LoadingShimmer(
+                      height: context.heigth * 0.55,
+                      width: context.width - 80,
+                      radius: 20,
                     ),
                   ),
                 )));

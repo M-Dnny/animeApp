@@ -9,7 +9,7 @@ class UpcomingService {
 
   Future<List<UpcomingModel>> getUpcoming() async {
     try {
-      const url = "$baseUrl$animeUrl$zoroUrl/top-upcoming";
+      const url = "$baseUrl$animeUrl/top-upcoming";
 
       log("top-upcoming URL: $url");
 
