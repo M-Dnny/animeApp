@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:anime_app/provider/service_provider/info/info_provider.dart';
-import 'package:anime_app/provider/service_provider/popular/popular_provider.dart';
-import 'package:anime_app/provider/service_provider/top/top_airing_provider.dart';
-import 'package:anime_app/provider/service_provider/upcoming/upcoming_provider.dart';
-import 'package:anime_app/provider/theme_provider/theme_provider.dart';
-import 'package:anime_app/utils/extentions.dart';
+import 'package:anime/provider/service_provider/info/info_provider.dart';
+import 'package:anime/provider/service_provider/popular/popular_provider.dart';
+import 'package:anime/provider/service_provider/top/top_airing_provider.dart';
+import 'package:anime/provider/service_provider/upcoming/upcoming_provider.dart';
+import 'package:anime/provider/theme_provider/theme_provider.dart';
+import 'package:anime/utils/extentions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';

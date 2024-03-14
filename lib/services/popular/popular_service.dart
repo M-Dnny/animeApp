@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:anime_app/models/popular_model/popular_model.dart';
-import 'package:anime_app/utils/config.dart';
+import 'package:anime/models/popular_model/popular_model.dart';
+import 'package:anime/utils/config.dart';
 import 'package:dio/dio.dart';
 
 class PopularService {

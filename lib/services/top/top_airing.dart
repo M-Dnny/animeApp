@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:anime_app/models/top_airing_model/top_airing_model.dart';
-import 'package:anime_app/utils/config.dart';
+import 'package:anime/models/top_airing_model/top_airing_model.dart';
+import 'package:anime/utils/config.dart';
 import 'package:dio/dio.dart';
 
 class TopAiringService {

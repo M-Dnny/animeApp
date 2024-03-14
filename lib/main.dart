@@ -1,7 +1,7 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:anime_app/provider/theme_provider/theme_provider.dart';
-import 'package:anime_app/router/routes.dart';
-import 'package:anime_app/utils/extentions.dart';
+import 'package:anime/provider/theme_provider/theme_provider.dart';
+import 'package:anime/router/routes.dart';
+import 'package:anime/utils/extentions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:anime_app/provider/service_provider/info/info_provider.dart';
-import 'package:anime_app/utils/extentions.dart';
-import 'package:anime_app/utils/loading.dart';
+import 'package:anime/provider/service_provider/info/info_provider.dart';
+import 'package:anime/utils/extentions.dart';
+import 'package:anime/utils/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';

@@ -1,5 +1,5 @@
-import 'package:anime_app/provider/router_provider/bottom_bar_provider.dart';
-import 'package:anime_app/views/home/home.dart';
+import 'package:anime/provider/router_provider/bottom_bar_provider.dart';
+import 'package:anime/views/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

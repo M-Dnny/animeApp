@@ -1,4 +1,4 @@
-name: anime_app
+name: anime
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -22,7 +22,7 @@ dependencies:
   google_fonts: ^6.2.1
   image_picker: ^1.0.7
   palette_generator: ^0.3.3+3
-  rename: ^3.0.1
+  rename: ^3.0.2
   simple_ripple_animation: ^0.0.9
   widget_mask: ^1.0.0+0
 

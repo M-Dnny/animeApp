@@ -2,9 +2,9 @@
 
 import 'dart:developer';
 
-import 'package:anime_app/models/info_model/info_model.dart';
-import 'package:anime_app/provider/service_provider/info/info_provider.dart';
-import 'package:anime_app/utils/config.dart';
+import 'package:anime/models/info_model/info_model.dart';
+import 'package:anime/provider/service_provider/info/info_provider.dart';
+import 'package:anime/utils/config.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

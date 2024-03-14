@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:anime_app/services/internet_available.dart';
+import 'package:anime/services/internet_available.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

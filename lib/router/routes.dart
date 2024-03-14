@@ -1,7 +1,7 @@
-import 'package:anime_app/router/bottom_bar.dart';
-import 'package:anime_app/views/detail/anime_detail.dart';
-import 'package:anime_app/views/home/home.dart';
-import 'package:anime_app/views/splash/splash.dart';
+import 'package:anime/router/bottom_bar.dart';
+import 'package:anime/views/detail/anime_detail.dart';
+import 'package:anime/views/home/home.dart';
+import 'package:anime/views/splash/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

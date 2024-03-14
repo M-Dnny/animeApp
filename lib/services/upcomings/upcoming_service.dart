@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:anime_app/models/upcoming_model/upcoming_model.dart';
-import 'package:anime_app/utils/config.dart';
+import 'package:anime/models/upcoming_model/upcoming_model.dart';
+import 'package:anime/utils/config.dart';
 import 'package:dio/dio.dart';
 
 class UpcomingService {

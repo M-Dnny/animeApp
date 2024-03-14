@@ -2,8 +2,8 @@ echo "Buidling apk now ...."
 flutter build apk 
 echo "Build completed"
 
-$appName ="actio academy"
-$appPackage = "com.example.actio_academy"
+$appName ="Anime"
+$appPackage = "com.example.anime"
 
 $adbDevices = adb devices | Select-Object -Skip 1 | ForEach-Object { $_.Split("`t")[0] }
 $apkPath = "build\app\outputs\flutter-apk\app-release.apk"
