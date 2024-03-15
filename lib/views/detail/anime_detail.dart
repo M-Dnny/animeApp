@@ -201,14 +201,9 @@ class _AnimeDetailState extends ConsumerState<AnimeDetail> {
                         textStyle: context.textTheme.labelMedium,
                       ),
 
-
                       // Seasons
 
                       const SizedBox(height: 30),
-
-                      
-
-
                     ],
                   ),
                 ),
@@ -264,6 +259,7 @@ class HeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final poster = data.poster.replaceFirst('300x400', '1920x1080');
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -288,7 +284,7 @@ class HeaderCard extends StatelessWidget {
             width: context.width,
           ),
           child: CachedNetworkImage(
-            imageUrl: data.poster,
+            imageUrl: poster,
             fit: BoxFit.cover,
             width: context.width,
             height: 250,
@@ -330,7 +326,7 @@ class HeaderCard extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(18)),
               ),
               child: CachedNetworkImage(
-                imageUrl: data.poster,
+                imageUrl: poster,
                 fit: BoxFit.cover,
                 errorWidget: (context, url, error) => Image.asset(
                   "assets/images/errimage.png",
