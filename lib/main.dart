@@ -14,9 +14,16 @@ class MainApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isPlatformDark =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+            Brightness.dark;
+
+    final initTheme = isPlatformDark
+        ? darkThemeData(context.textTheme)
+        : lightThemeData(context.textTheme);
     return ThemeProvider(
         duration: const Duration(seconds: 1),
-        initTheme: lightThemeData(context.textTheme),
+        initTheme: initTheme,
         builder: (context, theme) {
           return MaterialApp.router(
             routerConfig: router,

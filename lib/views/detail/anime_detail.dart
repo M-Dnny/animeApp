@@ -1,3 +1,4 @@
+import 'package:animated_read_more_text/animated_read_more_text.dart';
 import 'package:anime/models/info_model/info_model.dart';
 import 'package:anime/provider/service_provider/info/info_provider.dart';
 import 'package:anime/utils/extentions.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:text_scroll/text_scroll.dart';
 import 'package:widget_mask/widget_mask.dart';
@@ -74,29 +76,141 @@ class _AnimeDetailState extends ConsumerState<AnimeDetail> {
               if (loading) {
                 getColorPallete(data.poster.toString());
               }
-              return Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  children: [
-                    HeaderCard(imageColor: imageColor, data: data),
-                    const SizedBox(height: 20),
-                    Container(
-                      width: context.width * 0.7,
-                      alignment: Alignment.center,
-                      child: TextScroll(
-                        data.name,
-                        textAlign: TextAlign.center,
-                        mode: TextScrollMode.endless,
-                        delayBefore: const Duration(seconds: 2),
-                        pauseBetween: const Duration(seconds: 2),
-                        intervalSpaces: 10,
-                        style: context.textTheme.titleLarge!.copyWith(
-                            fontFamily:
-                                GoogleFonts.cinzelDecorative().fontFamily,
-                            fontWeight: FontWeight.bold),
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      HeaderCard(imageColor: imageColor, data: data),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Container(
+                          width: context.width * 0.7,
+                          alignment: Alignment.center,
+                          child: TextScroll(
+                            data.name,
+                            velocity:
+                                const Velocity(pixelsPerSecond: Offset(50, 0)),
+                            textAlign: TextAlign.center,
+                            mode: TextScrollMode.endless,
+                            pauseBetween: const Duration(seconds: 2),
+                            intervalSpaces: 10,
+                            style: context.textTheme.titleLarge!.copyWith(
+                                fontFamily:
+                                    GoogleFonts.cinzelDecorative().fontFamily,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ),
-                    )
-                  ],
+                      const SizedBox(height: 14),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 20,
+                              width: 20,
+                              decoration: const ShapeDecoration(
+                                color: Colors.amber,
+                                shape: StarBorder(
+                                  innerRadiusRatio: 0.5,
+                                  pointRounding: 0.2,
+                                  valleyRounding: 0.2,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              item.moreInfo.malscore == "?"
+                                  ? "N/A"
+                                  : item.moreInfo.malscore,
+                              style: context.textTheme.titleMedium,
+                            ),
+                          ]),
+                      const SizedBox(height: 14),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconText(
+                            title: item.moreInfo.premiered,
+                            icon: Iconsax.calendar_25,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Container(
+                              width: 1,
+                              height: 15,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          IconText(
+                            icon: Iconsax.video5,
+                            title: data.stats.quality,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Container(
+                              width: 1,
+                              height: 15,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          IconText(
+                            title: item.moreInfo.duration,
+                            icon: Iconsax.clock5,
+                          ),
+                        ],
+                      ),
+
+                      // GENRES
+
+                      const SizedBox(height: 30),
+
+                      Text("Genres", style: context.textTheme.titleMedium),
+                      const SizedBox(height: 5),
+                      Wrap(
+                        alignment: WrapAlignment.start,
+                        spacing: 10,
+                        children: item.moreInfo.genres
+                            .map((genre) => Chip(
+                                  padding: const EdgeInsets.all(0),
+                                  label: Text(genre),
+                                ))
+                            .toList(),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      // Description
+
+                      Text("Description", style: context.textTheme.titleMedium),
+                      const SizedBox(height: 5),
+                      AnimatedReadMoreText(
+                        data.description,
+                        maxLines: 3,
+                        animationCurve: Curves.linear,
+                        textStyle: context.textTheme.labelMedium,
+                      ),
+
+
+                      // Seasons
+
+                      const SizedBox(height: 30),
+
+                      
+
+
+                    ],
+                  ),
                 ),
               );
             },
@@ -107,6 +221,33 @@ class _AnimeDetailState extends ConsumerState<AnimeDetail> {
                   child: LoadingScreen(),
                 )),
       ),
+    );
+  }
+}
+
+class IconText extends StatelessWidget {
+  const IconText({
+    super.key,
+    required this.title,
+    required this.icon,
+  });
+
+  final String title;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(icon, size: 20),
+        const SizedBox(width: 5),
+        Text(
+          title,
+          style: context.textTheme.titleSmall,
+        ),
+      ],
     );
   }
 }

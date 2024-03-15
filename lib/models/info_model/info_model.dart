@@ -1,13 +1,16 @@
 class AnimeInfoModel {
   InfoModel info;
+  MoreInfoModel moreInfo;
 
   AnimeInfoModel({
     required this.info,
+    required this.moreInfo,
   });
 
   factory AnimeInfoModel.fromJson(Map<String, dynamic> json) {
     return AnimeInfoModel(
       info: InfoModel.fromJson(json["info"]),
+      moreInfo: MoreInfoModel.fromJson(json["moreInfo"]),
     );
   }
 }
@@ -72,8 +75,8 @@ class EpisodeModel {
 
   factory EpisodeModel.fromJson(Map<String, dynamic> json) {
     return EpisodeModel(
-      sub: json["sub"],
-      dub: json["dub"],
+      sub: json["sub"] ?? 0,
+      dub: json["dub"] ?? 0,
     );
   }
 }
@@ -85,7 +88,7 @@ class MoreInfoModel {
   final String premiered;
   final String duration;
   final String status;
-  final double malscore;
+  final String malscore;
   final List<String> genres;
   final String studios;
   final List<String> producers;
@@ -111,7 +114,7 @@ class MoreInfoModel {
       premiered: json["premiered"],
       duration: json["duration"],
       status: json["status"],
-      malscore: json["malscore"].toDouble(),
+      malscore: json["malscore"],
       genres: List<String>.from(json["genres"]),
       studios: json["studios"],
       producers: List<String>.from(json["producers"]),

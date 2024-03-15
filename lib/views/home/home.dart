@@ -157,11 +157,11 @@ class TopAiring extends ConsumerWidget {
                                           ),
                                           progressIndicatorBuilder:
                                               (context, url, progress) =>
-                                                  Center(
-                                            child: CircularProgressIndicator(
-                                              value: progress.progress,
-                                              color:
-                                                  context.colorScheme.tertiary,
+                                                  const Center(
+                                            child: LoadingShimmer(
+                                              height: 220,
+                                              width: 150,
+                                              radius: 20,
                                             ),
                                           ),
                                         ),
@@ -196,11 +196,25 @@ class TopAiring extends ConsumerWidget {
               );
             },
             error: (error, stackTrace) => Center(child: Text(error.toString())),
-            loading: () => Center(
-                  child: CircularProgressIndicator(
-                    color: context.colorScheme.tertiary,
-                  ),
-                )),
+            loading: () {
+              return SizedBox(
+                height: 220,
+                child: ListView.builder(
+                  itemCount: 5,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      child: LoadingShimmer(
+                        height: 220,
+                        width: 150,
+                        radius: 20,
+                      ),
+                    );
+                  },
+                ),
+              );
+            })
       ],
     );
   }
@@ -251,71 +265,85 @@ class UpcomingRender extends ConsumerWidget {
               return SizedBox(
                 height: 220,
                 child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: min(data.length, 10),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 20),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 190,
-                              width: 150,
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18.5),
-                              ),
-                              child: CachedNetworkImage(
-                                imageUrl: data[index].poster,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) =>
-                                    Image.asset(
-                                  "assets/images/errimage.png",
-                                  fit: BoxFit.cover,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: min(data.length, 10),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 190,
+                                width: 150,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18.5),
                                 ),
-                                progressIndicatorBuilder:
-                                    (context, url, progress) => Center(
-                                  child: CircularProgressIndicator(
-                                    value: progress.progress,
-                                    color: context.colorScheme.tertiary,
+                                child: CachedNetworkImage(
+                                  imageUrl: data[index].poster,
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                    "assets/images/errimage.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                                  progressIndicatorBuilder:
+                                      (context, url, progress) => const Center(
+                                    child: LoadingShimmer(
+                                      height: 220,
+                                      width: 150,
+                                      radius: 20,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: SizedBox(
-                                  width: 150,
-                                  child: Text(
-                                    data[index].name,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
-                                    style: context.textTheme.titleSmall!
-                                        .copyWith(
-                                            fontFamily:
-                                                GoogleFonts.cinzelDecorative()
-                                                    .fontFamily,
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                context.colorScheme.onSurface),
-                                  )),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: SizedBox(
+                                    width: 150,
+                                    child: Text(
+                                      data[index].name,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      style: context.textTheme.titleSmall!
+                                          .copyWith(
+                                              fontFamily:
+                                                  GoogleFonts.cinzelDecorative()
+                                                      .fontFamily,
+                                              fontWeight: FontWeight.bold,
+                                              color: context
+                                                  .colorScheme.onSurface),
+                                    )),
+                              ),
+                            ],
+                          ),
                         ),
+                      );
+                    }),
+              );
+            },
+            error: (error, stackTrace) => Center(child: Text(error.toString())),
+            loading: () {
+              return SizedBox(
+                height: 220,
+                child: ListView.builder(
+                  itemCount: 5,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      child: LoadingShimmer(
+                        height: 220,
+                        width: 150,
+                        radius: 20,
                       ),
                     );
                   },
                 ),
               );
-            },
-            error: (error, stackTrace) => Center(child: Text(error.toString())),
-            loading: () => Center(
-                  child: CircularProgressIndicator(
-                    color: context.colorScheme.tertiary,
-                  ),
-                ))
+            })
       ],
     );
   }
@@ -350,24 +378,25 @@ class Header extends ConsumerWidget {
       children: [
         ImageContainer(data: data),
         Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            alignment: Alignment.topLeft,
-            decoration: BoxDecoration(
-                gradient: themeMode == darkMode
-                    ? const LinearGradient(
-                        colors: [
-                          Colors.black54,
-                          Colors.black45,
-                          Colors.black38,
-                          Colors.black26,
-                          Colors.transparent,
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      )
-                    : null),
-            width: context.width,
-            child: ThemeSwitcher.switcher(builder: (_, switcher) {
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          alignment: Alignment.topLeft,
+          decoration: BoxDecoration(
+              gradient: themeMode == darkMode
+                  ? const LinearGradient(
+                      colors: [
+                        Colors.black54,
+                        Colors.black45,
+                        Colors.black38,
+                        Colors.black26,
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    )
+                  : null),
+          width: context.width,
+          child: ThemeSwitcher.switcher(
+            builder: (_, switcher) {
               return GestureDetector(
                 onTap: () => onChange(switcher),
                 child: Image.asset(
@@ -377,7 +406,9 @@ class Header extends ConsumerWidget {
                   height: 60,
                 ),
               );
-            })),
+            },
+          ),
+        ),
       ],
     );
   }
@@ -485,13 +516,16 @@ class ImageContainer extends ConsumerWidget {
                   height: context.heigth * 0.55,
                   child: Center(child: Text(error.toString())),
                 ),
-            loading: () => SizedBox(
-                  height: context.heigth * 0.55,
-                  child: Center(
-                    child: LoadingShimmer(
-                      height: context.heigth * 0.55,
-                      width: context.width - 80,
-                      radius: 20,
+            loading: () => Padding(
+                  padding: const EdgeInsets.only(top: 40),
+                  child: SizedBox(
+                    height: context.heigth * 0.50,
+                    child: Center(
+                      child: LoadingShimmer(
+                        height: context.heigth * 0.60,
+                        width: context.width - 80,
+                        radius: 20,
+                      ),
                     ),
                   ),
                 )));

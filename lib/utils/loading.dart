@@ -55,7 +55,7 @@ class LoadingShimmer extends ConsumerWidget {
           onPlay: (controller) => controller.repeat(),
         )
         .shimmer(
-          duration: const Duration(seconds: 1),
+          duration: const Duration(seconds: 2),
           blendMode: BlendMode.srcATop,
           angle: 0.5,
           size: 3,
