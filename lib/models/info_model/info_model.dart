@@ -1,16 +1,22 @@
 class AnimeInfoModel {
   InfoModel info;
   MoreInfoModel moreInfo;
+  List<SeasonModel> seasonModel;
 
   AnimeInfoModel({
     required this.info,
     required this.moreInfo,
+    required this.seasonModel,
   });
 
   factory AnimeInfoModel.fromJson(Map<String, dynamic> json) {
     return AnimeInfoModel(
-      info: InfoModel.fromJson(json["info"]),
-      moreInfo: MoreInfoModel.fromJson(json["moreInfo"]),
+      info: InfoModel.fromJson(json['anime']["info"]),
+      moreInfo: MoreInfoModel.fromJson(json['anime']["moreInfo"]),
+      seasonModel: json["seasons"] == null
+          ? <SeasonModel>[]
+          : List<SeasonModel>.from(
+              json["seasons"].map((e) => SeasonModel.fromJson(e))),
     );
   }
 }
@@ -32,10 +38,10 @@ class InfoModel {
 
   factory InfoModel.fromJson(Map<String, dynamic> json) {
     return InfoModel(
-      id: json["id"],
+      id: json["id"] ?? "",
       name: json["name"],
       poster: json["poster"],
-      description: json["description"],
+      description: json["description"] ?? "",
       stats: StatsModel.fromJson(json["stats"]),
     );
   }
@@ -109,15 +115,57 @@ class MoreInfoModel {
   factory MoreInfoModel.fromJson(Map<String, dynamic> json) {
     return MoreInfoModel(
       japanese: json["japanese"],
-      synonyms: json["synonyms"],
+      synonyms: json["synonyms"] ?? "",
       aired: json["aired"],
       premiered: json["premiered"],
       duration: json["duration"],
       status: json["status"],
       malscore: json["malscore"],
       genres: List<String>.from(json["genres"]),
-      studios: json["studios"],
-      producers: List<String>.from(json["producers"]),
+      studios: json["studios"] ?? "",
+      producers: List<String>.from(json["producers"] ?? []),
+    );
+  }
+}
+
+class SeasonModel {
+  final String id;
+  final String name;
+  final String title;
+  final String poster;
+  final bool isCurrent;
+
+  SeasonModel({
+    required this.id,
+    required this.name,
+    required this.title,
+    required this.poster,
+    required this.isCurrent,
+  });
+
+  factory SeasonModel.fromJson(Map<String, dynamic> json) {
+    return SeasonModel(
+      id: json["id"],
+      name: json["name"],
+      title: json["title"],
+      poster: json["poster"],
+      isCurrent: json["isCurrent"],
+    );
+  }
+
+  SeasonModel copyWith({
+    String? id,
+    String? name,
+    String? title,
+    String? poster,
+    bool? isCurrent,
+  }) {
+    return SeasonModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      title: title ?? this.title,
+      poster: poster ?? this.poster,
+      isCurrent: isCurrent ?? this.isCurrent,
     );
   }
 }

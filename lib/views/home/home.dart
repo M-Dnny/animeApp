@@ -5,8 +5,10 @@ import 'package:anime/models/home_model/home_model.dart';
 import 'package:anime/provider/service_provider/home/home_provider.dart';
 import 'package:anime/provider/service_provider/info/info_provider.dart';
 import 'package:anime/provider/theme_provider/theme_provider.dart';
+import 'package:anime/utils/components/anime_card.dart';
+import 'package:anime/utils/components/loading.dart';
+import 'package:anime/utils/components/not_found.dart';
 import 'package:anime/utils/extentions.dart';
-import 'package:anime/utils/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -29,29 +31,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return ThemeSwitchingArea(
       child: Scaffold(
         body: SafeArea(
-            child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Header Most Popular Anime Episodes
-              Header(
-                data: homeData,
-              ),
+            child: RefreshIndicator(
+          onRefresh: () async {
+            await Future.delayed(const Duration(seconds: 1));
+            ref.invalidate(homeProvider);
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Header Most Popular Anime Episodes
+                Header(
+                  data: homeData,
+                ),
 
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                child: Column(children: [
-                  // Upcoming Anime
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                  child: Column(children: [
+                    // Upcoming Anime
 
-                  UpcomingRender(data: homeData),
+                    UpcomingRender(data: homeData),
 
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                  // // Top Airing Anime
-                  TopAiring(data: homeData),
-                ]),
-              ),
-            ],
+                    // // Top Airing Anime
+                    TopAiring(data: homeData),
+                  ]),
+                ),
+              ],
+            ),
           ),
         )),
       ),
@@ -81,14 +89,23 @@ class TopAiring extends ConsumerWidget {
         data.when(
             data: (item) {
               final data = item.topAiring;
+              if (data.isEmpty) {
+                return const SizedBox(
+                  height: 250,
+                  child: NoDataFound(),
+                );
+              }
               return SizedBox(
-                height: 220,
+                height: 250,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 10,
                     itemBuilder: (context, index) {
                       final double leftPadding =
-                          index == 0 ? 30.0 : (index < 9 ? 40.0 : 100.0);
+                          index == 0 ? 30.0 : (index < 9 ? 40.0 : 110.0);
+
+                      final poster =
+                          data[index].poster.replaceAll('300x400', '1920x1080');
                       return GestureDetector(
                         onTap: () {
                           ref.watch(animeInfoIdProvider.notifier).state =
@@ -98,7 +115,7 @@ class TopAiring extends ConsumerWidget {
                         child: Padding(
                           padding: EdgeInsets.only(left: leftPadding),
                           child: SizedBox(
-                            width: 220,
+                            width: 200,
                             child: Stack(
                               clipBehavior: Clip.none,
                               alignment: Alignment.center,
@@ -106,8 +123,8 @@ class TopAiring extends ConsumerWidget {
                                 Positioned(
                                   top: -20,
                                   left: index == 0
-                                      ? -20
-                                      : (index < 9 ? -40.0 : -110.0),
+                                      ? -30
+                                      : (index < 9 ? -50.0 : -120.0),
                                   child: Text(
                                     "${index + 1}",
                                     textHeightBehavior:
@@ -127,65 +144,10 @@ class TopAiring extends ConsumerWidget {
                                     ),
                                   ),
                                 ),
-                                Column(
-                                  children: [
-                                    Hero(
-                                      tag: data[index].poster,
-                                      flightShuttleBuilder: (flightContext,
-                                          animation,
-                                          flightDirection,
-                                          fromHeroContext,
-                                          toHeroContext) {
-                                        return toHeroContext.widget;
-                                      },
-                                      child: Container(
-                                        height: 190,
-                                        width: 150,
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(18.5),
-                                        ),
-                                        child: CachedNetworkImage(
-                                          imageUrl: data[index].poster,
-                                          fit: BoxFit.cover,
-                                          errorWidget: (context, url, error) =>
-                                              Image.asset(
-                                            "assets/images/errimage.png",
-                                            fit: BoxFit.cover,
-                                          ),
-                                          progressIndicatorBuilder:
-                                              (context, url, progress) =>
-                                                  const Center(
-                                            child: LoadingShimmer(
-                                              height: 220,
-                                              width: 150,
-                                              radius: 20,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 5),
-                                      child: SizedBox(
-                                          width: 150,
-                                          child: Text(
-                                            data[index].name,
-                                            textAlign: TextAlign.center,
-                                            maxLines: 1,
-                                            style: context.textTheme.titleSmall!
-                                                .copyWith(
-                                                    fontFamily: GoogleFonts
-                                                            .cinzelDecorative()
-                                                        .fontFamily,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: context
-                                                        .colorScheme.onSurface),
-                                          )),
-                                    ),
-                                  ],
+                                AnimeCard(
+                                  poster: poster,
+                                  title: data[index].name,
+                                  textScroll: false,
                                 ),
                               ],
                             ),
@@ -198,7 +160,7 @@ class TopAiring extends ConsumerWidget {
             error: (error, stackTrace) => Center(child: Text(error.toString())),
             loading: () {
               return SizedBox(
-                height: 220,
+                height: 250,
                 child: ListView.builder(
                   itemCount: 5,
                   scrollDirection: Axis.horizontal,
@@ -206,7 +168,7 @@ class TopAiring extends ConsumerWidget {
                     return const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 5),
                       child: LoadingShimmer(
-                        height: 220,
+                        height: 250,
                         width: 150,
                         radius: 20,
                       ),
@@ -262,63 +224,30 @@ class UpcomingRender extends ConsumerWidget {
         data.when(
             data: (item) {
               final data = item.upcoming;
+              if (data.isEmpty) {
+                return const SizedBox(
+                  height: 250,
+                  child: NoDataFound(),
+                );
+              }
               return SizedBox(
-                height: 220,
+                height: 250,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: min(data.length, 10),
                     itemBuilder: (context, index) {
+                      final poster =
+                          data[index].poster.replaceAll("300x400", "1920x1080");
                       return GestureDetector(
-                        onTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: Column(
-                            children: [
-                              Container(
-                                height: 190,
-                                width: 150,
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18.5),
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: data[index].poster,
-                                  fit: BoxFit.cover,
-                                  errorWidget: (context, url, error) =>
-                                      Image.asset(
-                                    "assets/images/errimage.png",
-                                    fit: BoxFit.cover,
-                                  ),
-                                  progressIndicatorBuilder:
-                                      (context, url, progress) => const Center(
-                                    child: LoadingShimmer(
-                                      height: 220,
-                                      width: 150,
-                                      radius: 20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5),
-                                child: SizedBox(
-                                    width: 150,
-                                    child: Text(
-                                      data[index].name,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      style: context.textTheme.titleSmall!
-                                          .copyWith(
-                                              fontFamily:
-                                                  GoogleFonts.cinzelDecorative()
-                                                      .fontFamily,
-                                              fontWeight: FontWeight.bold,
-                                              color: context
-                                                  .colorScheme.onSurface),
-                                    )),
-                              ),
-                            ],
-                          ),
+                        onTap: () {
+                          ref.watch(animeInfoIdProvider.notifier).state =
+                              data[index].id.toString();
+                          context.pushNamed('animeDetail');
+                        },
+                        child: AnimeCard(
+                          poster: poster,
+                          title: data[index].name,
+                          textScroll: false,
                         ),
                       );
                     }),
@@ -327,7 +256,7 @@ class UpcomingRender extends ConsumerWidget {
             error: (error, stackTrace) => Center(child: Text(error.toString())),
             loading: () {
               return SizedBox(
-                height: 220,
+                height: 250,
                 child: ListView.builder(
                   itemCount: 5,
                   scrollDirection: Axis.horizontal,
@@ -335,7 +264,7 @@ class UpcomingRender extends ConsumerWidget {
                     return const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 5),
                       child: LoadingShimmer(
-                        height: 220,
+                        height: 250,
                         width: 150,
                         radius: 20,
                       ),
@@ -446,68 +375,76 @@ class ImageContainer extends ConsumerWidget {
                 ),
                 items: data.map((e) {
                   final poster = e.poster.replaceFirst('300x400', '1920x1080');
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 40),
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                        ),
-                        foregroundDecoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(30)),
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.black.withOpacity(0.9),
-                              Colors.transparent,
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
+                  return GestureDetector(
+                    onTap: () {
+                      ref.watch(animeInfoIdProvider.notifier).state =
+                          e.id.toString();
+                      context.pushNamed('animeDetail');
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 40),
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
                           ),
-                        ),
-                        child: CachedNetworkImage(
-                            imageUrl: poster,
-                            fit: BoxFit.cover,
-                            errorWidget: (context, url, error) => Image.asset(
-                                  "assets/images/notFound1.gif",
-                                  fit: BoxFit.cover,
-                                ),
-                            progressIndicatorBuilder:
-                                (context, url, progress) => Center(
-                                      child: LoadingShimmer(
-                                        height: context.heigth * 0.55,
-                                        width: context.width - 80,
-                                        radius: 20,
+                          foregroundDecoration: BoxDecoration(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(30)),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.black.withOpacity(0.9),
+                                Colors.transparent,
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                          ),
+                          child: CachedNetworkImage(
+                              imageUrl: poster,
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) => Image.asset(
+                                    "assets/images/notFound1.gif",
+                                    fit: BoxFit.cover,
+                                  ),
+                              progressIndicatorBuilder:
+                                  (context, url, progress) => Center(
+                                        child: LoadingShimmer(
+                                          height: context.heigth * 0.55,
+                                          width: context.width - 80,
+                                          radius: 20,
+                                        ),
                                       ),
-                                    ),
-                            width: context.width),
-                      ),
-                      Positioned(
-                        bottom: 20,
-                        left: 20,
-                        child: SizedBox(
-                          width: context.width * 0.7,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                e.name,
-                                style: context.textTheme.displaySmall!.copyWith(
-                                  fontSize: 24,
-                                  color: Colors.white,
-                                  fontFamily:
-                                      GoogleFonts.cinzelDecorative().fontFamily,
+                              width: context.width),
+                        ),
+                        Positioned(
+                          bottom: 20,
+                          left: 20,
+                          child: SizedBox(
+                            width: context.width * 0.7,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  e.name,
+                                  style:
+                                      context.textTheme.displaySmall!.copyWith(
+                                    fontSize: 24,
+                                    color: Colors.white,
+                                    fontFamily: GoogleFonts.cinzelDecorative()
+                                        .fontFamily,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 }).toList(),
               );

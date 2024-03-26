@@ -1,5 +1,6 @@
 import 'package:anime/router/bottom_bar.dart';
 import 'package:anime/views/detail/anime_detail.dart';
+import 'package:anime/views/detail/episode_detail.dart';
 import 'package:anime/views/home/home.dart';
 import 'package:anime/views/splash/splash.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,11 @@ final router = GoRouter(
               );
             });
       },
+    ),
+    GoRoute(
+      path: '/episodeDetail',
+      name: 'episodeDetail',
+      builder: (context, state) => const EpisodeDetail(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

@@ -26,12 +26,13 @@ dependencies:
   iconsax: ^0.0.8
   image_picker: ^1.0.7
   palette_generator: ^0.3.3+3
+  path_provider: ^2.1.2
   rename: ^3.0.2
   shimmer: ^3.0.0
   simple_ripple_animation: ^0.0.9
   text_scroll: ^0.2.0
   video_player: ^2.8.3
-  widget_mask: ^1.0.0+0
+  video_thumbnail: ^0.5.3
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:anime/models/episode_model/episode_model.dart';
 import 'package:anime/models/info_model/info_model.dart';
 import 'package:anime/provider/service_provider/info/info_provider.dart';
 import 'package:anime/utils/config.dart';
@@ -20,11 +21,34 @@ class InfoService {
       final result = await dio.get(url);
 
       if (result.statusCode == 200) {
-        final res = AnimeInfoModel.fromJson(result.data['anime']);
-
-        log(res.toString());
+        final res = AnimeInfoModel.fromJson(result.data);
 
         return res;
+      } else {
+        log(result.data.toString());
+      }
+
+      return Future.value();
+    } catch (e) {
+      log("Info Error: $e");
+      return Future.value();
+    }
+  }
+
+  Future<EpisodesModel> getEpisode({required FutureProviderRef ref}) async {
+    try {
+      final id = ref.watch(animeInfoIdProvider);
+      final url = "$baseUrl$animeUrl/episodes/$id";
+
+      log("Anime Episode URL: $url");
+
+      final result = await dio.get(url);
+
+      if (result.statusCode == 200) {
+        final res = EpisodesModel.fromJson(result.data);
+        return res;
+      } else {
+        log(result.data.toString());
       }
 
       return Future.value();
