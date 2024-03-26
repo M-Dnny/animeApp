@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -38,7 +39,6 @@ final containerWidthProvider = StateProvider<double>((ref) {
 });
 
 class _AnimeDetailState extends ConsumerState<AnimeDetail> {
-  // late ChewieController chewieController;
   ScrollController scrollController = ScrollController();
 
   Color imageColor = Colors.white;
@@ -65,27 +65,7 @@ class _AnimeDetailState extends ConsumerState<AnimeDetail> {
   @override
   void initState() {
     super.initState();
-    // initVideo();
   }
-
-  /* final videoPlayerController = VideoPlayerController.networkUrl(
-    Uri.parse(
-      "https://vd2.biananset.net/_v7/2d78cde20ab313272f3ad8bd5be5c8a09e945a5cf051238957b55cf52e76180dc307a020fa794579877bff94ffd0f4173e4f09102830b73f590a89b04f2364172f04567b029f1530ccf948f7611a49f2e55a73da718b6a60471da343c0827aa189bf80ca740e2f2066f88ac4155b37939f34a2faee93a19e02730f0504a4b732/master.m3u8",
-    ),
-  );
-
-  initVideo() async {
-    await videoPlayerController.initialize();
-
-    chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      aspectRatio: 3 / 2,
-      autoPlay: false,
-      looping: false,
-      autoInitialize: false,
-      showOptions: false,
-    );
-  } */
 
   @override
   Widget build(BuildContext context) {
@@ -328,67 +308,82 @@ class _AnimeDetailState extends ConsumerState<AnimeDetail> {
                                         itemCount:
                                             min(data.episodes.length, 10),
                                         itemBuilder: (context, index) {
-                                          return Stack(
-                                            fit: StackFit.expand,
-                                            children: [
-                                              Container(
-                                                clipBehavior: Clip.hardEdge,
-                                                margin: const EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                foregroundDecoration:
-                                                    BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  gradient: LinearGradient(
-                                                    colors: [
-                                                      Colors.transparent,
-                                                      Colors.black
-                                                          .withOpacity(0.1),
-                                                      Colors.black
-                                                          .withOpacity(0.8),
-                                                    ],
-                                                    begin: Alignment.topCenter,
-                                                    end: Alignment.bottomCenter,
+                                          return GestureDetector(
+                                            onTap: () {
+                                              context.pushNamed("episodeDetail",
+                                                  pathParameters: {
+                                                    "episodeId": data
+                                                        .episodes[index]
+                                                        .episodeId
+                                                  });
+                                            },
+                                            child: Stack(
+                                              fit: StackFit.expand,
+                                              children: [
+                                                Container(
+                                                  clipBehavior: Clip.hardEdge,
+                                                  margin:
+                                                      const EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
                                                   ),
-                                                ),
-                                                child: CachedNetworkImage(
-                                                  imageUrl: ref.watch(
-                                                      currentSeasonImgProvider),
-                                                  fit: BoxFit.cover,
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Image.asset(
-                                                    "assets/images/errimage.png",
+                                                  foregroundDecoration:
+                                                      BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        Colors.transparent,
+                                                        Colors.black
+                                                            .withOpacity(0.1),
+                                                        Colors.black
+                                                            .withOpacity(0.8),
+                                                      ],
+                                                      begin:
+                                                          Alignment.topCenter,
+                                                      end: Alignment
+                                                          .bottomCenter,
+                                                    ),
+                                                  ),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: ref.watch(
+                                                        currentSeasonImgProvider),
                                                     fit: BoxFit.cover,
-                                                  ),
-                                                  progressIndicatorBuilder:
-                                                      (context, url,
-                                                              progress) =>
-                                                          const Center(
-                                                    child: LoadingShimmer(
-                                                      height: 220,
-                                                      width: 150,
-                                                      radius: 20,
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            Image.asset(
+                                                      "assets/images/errimage.png",
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                    progressIndicatorBuilder:
+                                                        (context, url,
+                                                                progress) =>
+                                                            const Center(
+                                                      child: LoadingShimmer(
+                                                        height: 220,
+                                                        width: 150,
+                                                        radius: 20,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              Positioned(
-                                                bottom: 10,
-                                                left: 15,
-                                                child: Text(
-                                                  "Episode ${data.episodes[index].number}",
-                                                  style: context
-                                                      .textTheme.bodyLarge!
-                                                      .copyWith(
-                                                    color: Colors.white,
+                                                Positioned(
+                                                  bottom: 10,
+                                                  left: 15,
+                                                  child: Text(
+                                                    "Episode ${data.episodes[index].number}",
+                                                    style: context
+                                                        .textTheme.bodyLarge!
+                                                        .copyWith(
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           );
                                         },
                                       );
@@ -521,7 +516,7 @@ class SeasonCard extends ConsumerWidget {
       },
       child: AnimeCard(
         title: seasonItem.name,
-        poster: poster,
+        poster: seasonItem.poster,
         shadow: isCurrent,
         shadowColor: shadowColor,
         textScroll: true,
@@ -595,7 +590,7 @@ class HeaderCard extends StatelessWidget {
               height: context.width * 0.6450617283950617,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: CachedNetworkImageProvider(poster),
+                    image: CachedNetworkImageProvider(data.poster),
                     fit: BoxFit.cover),
               ),
               child: CustomPaint(
@@ -616,7 +611,7 @@ class HeaderCard extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(18)),
             ),
             child: CachedNetworkImage(
-              imageUrl: poster,
+              imageUrl: data.poster,
               fit: BoxFit.cover,
               errorWidget: (context, url, error) => Image.asset(
                 "assets/images/errimage.png",

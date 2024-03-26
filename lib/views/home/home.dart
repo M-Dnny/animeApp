@@ -145,7 +145,7 @@ class TopAiring extends ConsumerWidget {
                                   ),
                                 ),
                                 AnimeCard(
-                                  poster: poster,
+                                  poster: data[index].poster,
                                   title: data[index].name,
                                   textScroll: false,
                                 ),
@@ -245,7 +245,7 @@ class UpcomingRender extends ConsumerWidget {
                           context.pushNamed('animeDetail');
                         },
                         child: AnimeCard(
-                          poster: poster,
+                          poster: data[index].poster,
                           title: data[index].name,
                           textScroll: false,
                         ),
@@ -403,7 +403,7 @@ class ImageContainer extends ConsumerWidget {
                             ),
                           ),
                           child: CachedNetworkImage(
-                              imageUrl: poster,
+                              imageUrl: e.poster,
                               fit: BoxFit.cover,
                               errorWidget: (context, url, error) => Image.asset(
                                     "assets/images/notFound1.gif",

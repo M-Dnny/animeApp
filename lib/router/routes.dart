@@ -42,9 +42,11 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/episodeDetail',
+      path: '/episodeDetail/:episodeId',
       name: 'episodeDetail',
-      builder: (context, state) => const EpisodeDetail(),
+      builder: (context, state) => EpisodeDetail(
+        episodeId: state.pathParameters['episodeId'].toString(),
+      ),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

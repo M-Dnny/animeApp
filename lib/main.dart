@@ -3,10 +3,15 @@ import 'package:anime/provider/theme_provider/theme_provider.dart';
 import 'package:anime/router/routes.dart';
 import 'package:anime/utils/extentions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const ProviderScope(child: MainApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(const ProviderScope(child: MainApp()));
+  });
 }
 
 class MainApp extends ConsumerWidget {
